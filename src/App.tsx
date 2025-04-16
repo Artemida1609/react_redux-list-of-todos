@@ -14,7 +14,7 @@ export const App = () => (
           </div>
 
           <div className="block">
-            <Loader />
+            {/* <Loader /> */}
             <TodoList />
           </div>
         </div>
