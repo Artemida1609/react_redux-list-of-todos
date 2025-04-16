@@ -9,14 +9,12 @@ import { getUser } from '../../api';
 
 export const TodoModal: React.FC = () => {
   const [currUser, setCurrUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const dispatch = useAppDispatch();
   const currTodo = useAppSelector((state: RootState) => state.currentTodo);
 
   useEffect(() => {
     if (currTodo) {
-      console.log('loading...');
-      setIsLoading(true);
       getUser(currTodo.userId)
         .then(usersFromServer => {
           setCurrUser(usersFromServer);
@@ -25,18 +23,10 @@ export const TodoModal: React.FC = () => {
           throw new Error(e);
         })
         .finally(() => setIsLoading(false));
-    } else {
-      console.log('false');
-      setCurrUser(null);
-      setIsLoading(false);
     }
   }, [currTodo]);
 
-  if (!currTodo) {
-    return null;
-  }
-
-  if (isLoading && !currUser) {
+  if (isLoading) {
     return (
       <div className="modal is-active" data-cy="modal">
         <div className="modal-background" />
@@ -47,7 +37,7 @@ export const TodoModal: React.FC = () => {
 
   return (
     <>
-      {currTodo && !isLoading && (
+      {currTodo && (
         <div className="modal is-active" data-cy="modal">
           <div className="modal-background" />
 

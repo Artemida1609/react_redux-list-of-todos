@@ -1,11 +1,13 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { filterSlice, FilterState } from '../../features/filter';
 import { useAppSelector } from '../../app/hooks';
 import { RootState } from '../../app/store';
-import { filterSlice } from '../../features/filter';
 
 export const TodoFilter: React.FC = () => {
   const dispatch = useDispatch();
+  const query = useAppSelector((state: RootState) => state.filter.query);
+
   return (
     <form
       className="field has-addons"
@@ -13,27 +15,19 @@ export const TodoFilter: React.FC = () => {
     >
       <p className="control">
         <span className="select">
-          <select data-cy="statusSelect">
-            <option
-              value="all"
-              onClick={() => dispatch(filterSlice.actions.setStatus('all'))}
-            >
-              All
-            </option>
-            <option
-              value="active"
-              onClick={() => dispatch(filterSlice.actions.setStatus('active'))}
-            >
-              Active
-            </option>
-            <option
-              value="completed"
-              onClick={() =>
-                dispatch(filterSlice.actions.setStatus('completed'))
-              }
-            >
-              Completed
-            </option>
+          <select
+            data-cy="statusSelect"
+            onChange={e =>
+              dispatch(
+                filterSlice.actions.setStatus(
+                  e.target.value as FilterState['status'],
+                ),
+              )
+            }
+          >
+            <option value="all">All</option>
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
           </select>
         </span>
       </p>
@@ -44,6 +38,7 @@ export const TodoFilter: React.FC = () => {
           type="text"
           className="input"
           placeholder="Search..."
+          value={query}
           onChange={e => dispatch(filterSlice.actions.setQuery(e.target.value))}
         />
         <span className="icon is-left">
@@ -52,12 +47,14 @@ export const TodoFilter: React.FC = () => {
 
         <span className="icon is-right" style={{ pointerEvents: 'all' }}>
           {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-          <button
-            data-cy="clearSearchButton"
-            type="button"
-            className="delete"
-            onClick={() => dispatch(filterSlice.actions.setQuery(''))}
-          />
+          {query.length !== 0 && (
+            <button
+              data-cy="clearSearchButton"
+              type="button"
+              className="delete"
+              onClick={() => dispatch(filterSlice.actions.setQuery(''))}
+            />
+          )}
         </span>
       </p>
     </form>

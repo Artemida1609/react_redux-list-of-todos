@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { currentTodoSlice } from '../../features/currentTodo';
 import { getTodos } from '../../api';
 import { todosSlice } from '../../features/todos';
+import { Loader } from '../Loader';
 
 export const TodoList: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -37,6 +38,7 @@ export const TodoList: React.FC = () => {
 
   return (
     <>
+      {isLoading && <Loader />}
       {!isLoading && filtered.length === 0 && (
         <p className="notification is-warning">
           There are no todos matching current filter criteria
@@ -64,7 +66,13 @@ export const TodoList: React.FC = () => {
             return (
               <tr data-cy="todo" key={todo.id}>
                 <td className="is-vcentered">{todo.id}</td>
-                <td className="is-vcentered"> </td>
+                <td className="is-vcentered">
+                  {todo.completed && (
+                    <span className="icon" data-cy="iconCompleted">
+                      <i className="fas fa-check" />
+                    </span>
+                  )}
+                </td>
 
                 <td className="is-vcentered is-expanded">
                   <p
